@@ -1,0 +1,50 @@
+services:
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"
+
+  mysql:
+    image: mysql:8.0            # Official MySQL container
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: alertsdb
+    ports:
+      - "3306:3306"             # Expose to host
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    command: node index.js
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    depends_on:
+      - mysql
+      - redis
+    env_file: ./backend/.env
+
+  celery:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile-celery
+    env_file:
+      - ./backend/.env
+    depends_on:
+      - redis
+      - mysql
+
+  frontend:
+    build: ./frontend_react
+    ports:
+      - "3000:80" # Changed from "3000:3000"
+    depends_on:
+      - backend
+
+volumes:
+  mysql-data:
