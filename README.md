@@ -2,7 +2,7 @@
 
 This is a full-stack web application designed to fetch and display the latest news headlines. It is fully containerised using Docker, making the development and deployment process streamlined and consistent across different environments.
 
-The application is composed of several services working in concert:
+The application is composed of several services working in unison:
 *   A **React frontend** to provide a dynamic user interface.
 *   A **Node.js backend** to serve the API.
 *   A **Python Celery worker** for asynchronous background tasks, such as fetching news articles.
